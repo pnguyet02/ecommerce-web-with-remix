@@ -13,8 +13,12 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
+    // "module": "ESNext",
+    "module": "CommonJS",
+
+    // "moduleResolution": "Bundler",
+    "moduleResolution": "Node",
+
     "resolveJsonModule": true,
     "target": "ES2022",
     "strict": true,
