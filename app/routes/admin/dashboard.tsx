@@ -1,16 +1,17 @@
-import { redirect } from "@remix-run/node";
-import { json, LoaderFunction } from "@remix-run/node";
-import { getUserFromSession } from "~/sessions";
+import { json, redirect } from "@remix-run/node";
+import { getUserFromSession } from "~/utils/session";
 
-export let loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: { request: Request }) => {
   const user = await getUserFromSession(request);
   if (!user || user.role !== "admin") {
-    return redirect("/dashboard"); // Nếu không phải admin, chuyển hướng tới trang dashboard
+    // Nếu không phải admin, chuyển hướng đến trang chủ
+    return redirect("/");
   }
+
   return json({ user });
 };
 
-export default function AdminPage() {
+export default function AdminDashboard() {
   return (
     <div>
       <h1>Admin Dashboard</h1>

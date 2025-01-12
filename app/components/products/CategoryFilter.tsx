@@ -1,9 +1,9 @@
 //hiển thị dropdown lọc danh mục.
 import { Link } from "@remix-run/react";
-import { Category } from "~/types"; // Import Category kiểu dữ liệu
+import { CategoryData } from "~/types"; // Import Category kiểu dữ liệu
 
 interface CategoryFilterProps {
-  categories: Category[];
+  categories: CategoryData[];
   currentCategory: number;
 }
 

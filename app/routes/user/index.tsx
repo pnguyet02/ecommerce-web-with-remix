@@ -7,11 +7,16 @@ export let loader: LoaderFunction = async ({ request }) => {
 
   // Kiểm tra nếu người dùng không phải là user hoặc không có session
   if (!user || user.role !== "user") {
-    return redirect("/"); // Hoặc chuyển hướng đến trang đăng nhập
+    return redirect("/"); //
   }
 
   return null; // Nếu là user, tiếp tục render trang dashboard cho người dùng
 };
-export default function UserDashboard() {
-  return <h1>User Dashboard</h1>;
+export default function UserIndex() {
+  return (
+    <div>
+      <h1>User Dashboard</h1>
+      {/* Nội dung dành riêng cho người dùng bình thường */}
+    </div>
+  );
 }

@@ -1,7 +1,17 @@
 import { json, redirect, ActionFunction } from "@remix-run/node";
 import { prisma } from "~/db/prisma.server";
 import { setSession } from "~/sessions";
-import { bcryptCompare } from "../utils/auth";
+import bcrypt from "bcryptjs";
+import { authenticateUser } from "~/utils/auth";
+// Hàm cập nhật mật khẩu mới trong DB (nếu cần)
+// const updatePassword = async (email: string, newPassword: string) => {
+//   const hashedPassword = await bcrypt.hash(newPassword, 10);
+//   await prisma.user.update({
+//     where: { email: email },
+//     data: { password: hashedPassword },
+//   });
+//   console.log("Mật khẩu đã được cập nhật thành công!");
+// };
 
 export let action: ActionFunction = async ({ request }) => {
   const formData = new URLSearchParams(await request.text());
@@ -20,15 +30,27 @@ export let action: ActionFunction = async ({ request }) => {
     where: { email: email },
   });
 
-  console.log("User từ database:", user);
-
   if (!user) {
     console.log("Email không tồn tại.");
     return json({ error: "Email không tồn tại" }, { status: 400 });
   }
 
-  const isPasswordCorrect = await bcryptCompare(password, user.password);
-  console.log("Mật khẩu hợp lệ:", isPasswordCorrect);
+  // In ra thông tin chi tiết mật khẩu trong DB và mật khẩu người dùng nhập vào
+  console.log("Mật khẩu đã mã hóa trong DB:", user.password);
+  console.log("Mật khẩu người dùng nhập vào:", password);
+
+  // Loại bỏ khoảng trắng ở đầu và cuối mật khẩu
+  const passwordTrimmed = password.trim();
+  const userPasswordTrimmed = user.password.trim();
+  console.log("Mật khẩu người dùng nhập vào sau khi trim:", passwordTrimmed);
+  console.log("Mật khẩu trong DB sau khi trim:", userPasswordTrimmed);
+
+  // So sánh mật khẩu đã mã hóa với mật khẩu người dùng nhập vào
+  const isPasswordCorrect = await bcrypt.compare(
+    passwordTrimmed,
+    userPasswordTrimmed
+  );
+  console.log("Kết quả so sánh mật khẩu:", isPasswordCorrect);
 
   if (!isPasswordCorrect) {
     console.log("Mật khẩu không đúng.");
@@ -45,12 +67,42 @@ export let action: ActionFunction = async ({ request }) => {
     });
   }
 
-  return redirect("/user/index", {
+  return redirect("/", {
     headers: {
       "Set-Cookie": await setSession(user),
     },
   });
 };
+// login.ts (action của trang login)
+
+// routes/login.tsx
+
+// export let action = async ({ request }: any) => {
+//   // Lấy dữ liệu từ form gửi lên (POST request)
+//   let formData = new URLSearchParams(await request.text());
+//   let email = formData.get("email"); // Lấy giá trị email từ form
+//   let password = formData.get("password");
+
+//   // Kiểm tra nếu email và password có tồn tại và hợp lệ
+//   if (!email || !password) {
+//     return { error: "Email and password are required" };
+//   }
+
+//   // Xác thực người dùng qua email và mật khẩu
+//   let user = await authenticateUser(email, password);
+
+//   if (user) {
+//     // Nếu đăng nhập thành công, lưu user vào session và điều hướng đến trang dashboard
+//     return redirect("/dashboard", {
+//       headers: {
+//         "Set-Cookie": await setUserSession(user, request), // Truyền đúng 2 đối số
+//       },
+//     });
+//   } else {
+//     // Nếu thông tin đăng nhập không hợp lệ
+//     return { error: "Invalid credentials" };
+//   }
+// };
 
 export default function Login() {
   return (
