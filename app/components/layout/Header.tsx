@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useLoaderData } from "@remix-run/react";
 import { getUserFromSession } from "~/sessions";
 
@@ -18,6 +18,15 @@ export default function Header() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const { user } = useLoaderData<LoaderData>();
   const navigate = useNavigate();
+
+  // Khi người dùng đăng nhập, cập nhật lại giao diện
+  useEffect(() => {
+    if (user) {
+      console.log("User logged in:", user); // Kiểm tra thông tin người dùng
+    } else {
+      console.log("User is not logged in");
+    }
+  }, [user]);
 
   const toggleDropdown = (menu: string) => {
     setActiveMenu((prev) => (prev === menu ? null : menu));
@@ -191,27 +200,8 @@ export default function Header() {
             </ul>
           </div>
           <div className="flex items-center space-x-4">
-            {user?.role === "admin" && (
-              <>
-                <Link to="/admin/dashboard" className="font-bold">
-                  Dashboard
-                </Link>
-                <Link to="/admin/products" className="font-bold">
-                  Quản lý Sản phẩm
-                </Link>
-                <Link to="/admin/users" className="font-bold">
-                  Quản lý Người dùng
-                </Link>
-              </>
-            )}
             {user ? (
               <>
-                <Link to="/cart" className="font-bold">
-                  Giỏ hàng
-                </Link>
-                <Link to="/orders" className="font-bold">
-                  Đơn hàng
-                </Link>
                 <span>{user.name}</span>
                 <button
                   className="text-sm bg-red-600 text-white px-3 py-1 rounded"

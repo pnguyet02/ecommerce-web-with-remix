@@ -1,23 +1,64 @@
+// import { createCookieSessionStorage } from "@remix-run/node";
+
+// const { getSession, commitSession, destroySession } =
+//   createCookieSessionStorage({
+//     cookie: {
+//       name: "__session", // Tên của cookie
+//       secure: process.env.NODE_ENV === "production",
+//       secrets: ["your-secret-key"], // Đảm bảo dùng một secret key mạnh
+//       sameSite: "lax",
+//       httpOnly: true,
+//     },
+//   });
+
+// export const getUserFromSession = async (request: Request) => {
+//   const session = await getSession(request.headers.get("Cookie"));
+
+//   // Trả về thông tin người dùng nếu có
+//   return {
+//     userId: session.get("userId"),
+//     name: session.get("name"),
+//     email: session.get("email"),
+//     role: session.get("role"), // Lấy role từ session
+//   };
+// };
+
+// // Lưu thông tin người dùng vào session
+// export const setSession = async (user: any) => {
+//   const session = await getSession();
+//   session.set("userId", user.id); // Lưu userId vào session
+//   session.set("role", user.role); // Lưu role vào session
+//   console.log("User session set:", user); // Log thông tin để kiểm tra
+//   return commitSession(session);
+// };
+
+// // Xóa session khi người dùng đăng xuất
+// export const destroyUserSession = async (request: Request) => {
+//   const session = await getSession(request.headers.get("Cookie"));
+//   return destroySession(session);
+// };
 import { createCookieSessionStorage } from "@remix-run/node";
 
 const { getSession, commitSession, destroySession } =
   createCookieSessionStorage({
     cookie: {
-      name: "__session", // Tên của cookie
-      secure: process.env.NODE_ENV === "production",
-      secrets: ["your-secret-key"], // Đảm bảo dùng một secret key mạnh
-      sameSite: "lax",
-      httpOnly: true,
+      name: "__session", // Tên cookie lưu trữ session
+      secure: process.env.NODE_ENV === "production", // Chỉ bật secure khi ở môi trường production
+      secrets: ["your-secret-key"], // Đảm bảo sử dụng một secret key mạnh
+      sameSite: "lax", // Chế độ SameSite cookie
+      httpOnly: true, // Đảm bảo cookie chỉ có thể truy cập qua HTTP, không qua JavaScript
     },
   });
 
 // Lấy thông tin người dùng từ session
 export const getUserFromSession = async (request: Request) => {
   const session = await getSession(request.headers.get("Cookie"));
+
   return {
-    userId: session.get("userId"), // Lấy userId từ session
+    userId: session.get("userId"),
     name: session.get("name"),
-    role: session.get("role"), // Lấy role từ session
+    email: session.get("email"),
+    role: session.get("role"), // Lấy thông tin role từ session
   };
 };
 
@@ -25,47 +66,16 @@ export const getUserFromSession = async (request: Request) => {
 export const setSession = async (user: any) => {
   const session = await getSession();
   session.set("userId", user.id); // Lưu userId vào session
+  session.set("name", user.name); // Lưu tên người dùng vào session
+  session.set("email", user.email); // Lưu email vào session
   session.set("role", user.role); // Lưu role vào session
+
   console.log("User session set:", user); // Log thông tin để kiểm tra
-  return commitSession(session);
+  return commitSession(session); // Cập nhật session và trả về cookie
 };
 
 // Xóa session khi người dùng đăng xuất
 export const destroyUserSession = async (request: Request) => {
   const session = await getSession(request.headers.get("Cookie"));
-  return destroySession(session);
+  return destroySession(session); // Xóa session và trả về cookie đã xóa
 };
-// sessions.ts (hoặc session.js)
-// sessions.ts
-// import { createCookieSessionStorage } from "@remix-run/node";
-
-// let sessionSecret = process.env.SESSION_SECRET || "my-secret-key"; // Bí mật cho session
-// let storage = createCookieSessionStorage({
-//   cookie: {
-//     name: "__session", // Tên của cookie
-//     secure: process.env.NODE_ENV === "production", // Đảm bảo cookie an toàn trong môi trường production
-//     secrets: [sessionSecret], // Bí mật để mã hóa cookie
-//     sameSite: "lax",
-//     path: "/",
-//   },
-// });
-
-// // Hàm lấy session từ request
-// export let getSession = (request: Request) =>
-//   storage.getSession(request.headers.get("Cookie"));
-
-// // Hàm lưu session
-// export let commitSession = (session: any) => storage.commitSession(session);
-
-// // Hàm thiết lập session với thông tin người dùng
-// export let setUserSession = async (user: any, request: Request) => {
-//   let session = await getSession(request); // Lấy session từ request
-//   session.set("user", user); // Lưu thông tin người dùng vào session
-//   return commitSession(session); // Trả về cookie đã được cập nhật
-// };
-
-// // Hàm lấy thông tin người dùng từ session
-// export let getUserFromSession = async (request: Request) => {
-//   let session = await getSession(request);
-//   return session.get("user"); // Trả về thông tin người dùng từ session
-// };

@@ -67,7 +67,7 @@ export let action: ActionFunction = async ({ request }) => {
     });
   }
 
-  return redirect("/", {
+  return redirect("/user", {
     headers: {
       "Set-Cookie": await setSession(user),
     },

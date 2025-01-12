@@ -13,5 +13,9 @@ export interface CategoryData {
 export interface User {
   id: number;
   name: string;
+  email: string;
   role: string;
 }
+export type LoaderData = {
+  user: { userId: string; name: string; email: string; role: string } | null;
+};
