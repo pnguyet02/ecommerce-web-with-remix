@@ -21,4 +21,8 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
+  // thêm mới
+  define: {
+    "process.env": {}, // Giả lập process trong trình duyệt
+  },
 });

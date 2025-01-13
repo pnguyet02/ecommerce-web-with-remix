@@ -1,34 +1,32 @@
-//hiển thị dropdown lọc danh mục.
+// ~/components/products/CategoryFilter.tsx
 import { Link } from "@remix-run/react";
-import { CategoryData } from "~/types"; // Import Category kiểu dữ liệu
 
 interface CategoryFilterProps {
-  categories: CategoryData[];
-  currentCategory: number;
+  categories: { id: number; name: string }[];
+  baseUrl: string;
 }
 
-export default function CategoryFilter({
+const CategoryFilter: React.FC<CategoryFilterProps> = ({
   categories,
-  currentCategory,
-}: CategoryFilterProps) {
+  baseUrl,
+}) => {
   return (
-    <div>
-      <select
-        name="category"
-        defaultValue={currentCategory}
-        className="px-4 py-2 bg-gray-700 text-white rounded"
-        onChange={(e) => {
-          const selectedCategory = e.target.value;
-          window.location.search = `?page=1&category=${selectedCategory}`;
-        }}
-      >
-        <option value="0">Tất cả danh mục</option>
+    <div className="bg-gray-800 p-4 rounded-md">
+      <h3 className="text-xl font-semibold mb-4">Danh mục sản phẩm</h3>
+      <ul>
         {categories.map((category) => (
-          <option key={category.id} value={category.id}>
-            {category.name}
-          </option>
+          <li key={category.id} className="mb-2">
+            <Link
+              to={`${baseUrl}?categoryId=${category.id}`} // Sử dụng categoryId thay vì category
+              className="text-blue-500 hover:text-blue-300"
+            >
+              {category.name}
+            </Link>
+          </li>
         ))}
-      </select>
+      </ul>
     </div>
   );
-}
+};
+
+export default CategoryFilter;

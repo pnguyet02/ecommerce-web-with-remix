@@ -1,44 +1,49 @@
-// UserPage.tsx
-import { useLoaderData } from "@remix-run/react"; // Import useLoaderData để lấy dữ liệu từ loader
-import { LoaderData } from "~/types"; // Đảm bảo import đúng kiểu LoaderData từ nơi khai báo kiểu
+import { useLoaderData } from "@remix-run/react";
+import Header from "~/components/layout/Header";
+import Footer from "~/components/layout/Footer";
+import Cart from "~/components/user/Cart";
+import AccountManagement from "~/components/user/AccountManagement";
+import { User } from "~/types"; // Import your User type
+import { getUserFromSession } from "~/sessions";
+export let loader = async ({ request }: { request: Request }) => {
+  const user = await getUserFromSession(request); // Get user from session or DB
+  return { user }; // Return user data
+};
 
-export { loader } from "./loader";
+export default function Home() {
+  const { user } = useLoaderData<{ user: User }>(); // Access the loaded user data
 
-export default function UserPage() {
-  const { user } = useLoaderData<LoaderData>(); // Khai báo kiểu LoaderData cho useLoaderData
-
-  if (!user) {
-    return <div>Loading...</div>;
-  }
+  // Update user function (can be handled via a form action)
+  const handleUserUpdate = (newName: string, newEmail: string) => {
+    // Handle update logic, e.g., make a POST request or update state
+    console.log(newName, newEmail);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg">
-        <h1 className="text-3xl font-semibold text-center text-gray-700 mb-6">
-          Welcome, {user.name}!
-        </h1>
-        <div className="text-center mb-4">
-          <p className="text-xl text-gray-600">
-            You are logged in as a normal user. This is your dashboard.
-          </p>
+      {/* Header Section */}
+      <Header />
+
+      {/* Main Content Section */}
+      <main className="max-w-7xl mx-auto p-8">
+        <h1 className="text-4xl font-bold mb-6">Welcome to My E-commerce!</h1>
+
+        {/* Cart and Account Management Components */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Cart Section */}
+          <Cart />
+
+          {/* Account Management Section */}
+          <AccountManagement
+            name={user.name}
+            email={user.email}
+            onUpdate={handleUserUpdate}
+          />
         </div>
-        <div className="mt-6">
-          <p className="text-lg text-gray-700">Your details:</p>
-          <ul className="text-sm text-gray-600">
-            <li>Name: {user.name}</li>
-            <li>Email: {user.email}</li>
-            <li>Role: {user.role}</li>
-          </ul>
-        </div>
-        <div className="mt-8 text-center">
-          <a
-            href="/logout"
-            className="py-2 px-4 bg-red-500 text-white rounded-lg hover:bg-red-600"
-          >
-            Log Out
-          </a>
-        </div>
-      </div>
+      </main>
+
+      {/* Footer Section */}
+      <Footer />
     </div>
   );
 }

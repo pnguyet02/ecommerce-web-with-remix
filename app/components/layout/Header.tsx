@@ -128,7 +128,7 @@ export default function Header() {
               <li className="relative">
                 <div className="flex items-center">
                   <Link
-                    to="/trends"
+                    to="/blogs"
                     className="text-lg text-gray-900 dark:text-white font-bold"
                     onClick={() => setActiveMenu(null)}
                   >
@@ -139,7 +139,7 @@ export default function Header() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      toggleDropdown("trends");
+                      toggleDropdown("blogs");
                     }}
                   >
                     <svg
@@ -158,12 +158,12 @@ export default function Header() {
                     </svg>
                   </button>
                 </div>
-                {activeMenu === "trends" && (
+                {activeMenu === "blogs" && (
                   <div className="absolute z-10 mt-2 w-48 bg-white rounded-md shadow-lg dark:bg-gray-800">
                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
                       <li>
                         <Link
-                          to="/trends/news"
+                          to={`?blogId=1`}
                           className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600"
                         >
                           Tin tức tổng hợp
@@ -171,7 +171,7 @@ export default function Header() {
                       </li>
                       <li>
                         <Link
-                          to="/trends/designs"
+                          to={`?blogId=2`}
                           className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600"
                         >
                           Sản phẩm thiết kế
