@@ -15,7 +15,7 @@ export default function Products() {
   const { products, totalPages, currentPage, searchQuery, sort, categories } =
     useLoaderData<LoaderData>();
 
-  const baseUrl = "/products"; // Địa chỉ gốc của trang sản phẩm
+  const baseUrl = "/products";
 
   // Hàm xử lý thay đổi trang
   const handlePageChange = (page: number) => {

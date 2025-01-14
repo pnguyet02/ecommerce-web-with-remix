@@ -1,18 +1,14 @@
 import React from "react";
 import { Form, useNavigate, useLoaderData } from "@remix-run/react";
-
-interface Category {
-  id: number;
-  name: string;
-}
-
-interface LoaderData {
-  categories: Category[];
-}
-
+import { Product } from "~/types";
+import { action } from "./action";
+export { action };
 export default function CreateProduct() {
-  const loaderData = useLoaderData<LoaderData>();
-  const categories = loaderData?.categories || []; // Fallback to an empty array
+  const loaderData = useLoaderData();
+  const product = loaderData
+    ? (loaderData as { product: Product }).product
+    : null;
+
   const navigate = useNavigate();
 
   const handleCancel = () => {
@@ -63,25 +59,21 @@ export default function CreateProduct() {
           />
 
           {/* Category Selector */}
-          <div className="mb-4">
-            {categories.length > 0 ? (
-              <select
-                name="categoryId"
-                className="px-4 py-2 bg-gray-700 text-white rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              >
-                <option value="" disabled selected>
-                  Chọn danh mục
-                </option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <div className="text-gray-400">Chưa có danh mục nào</div>
-            )}
+          <div>
+            <label htmlFor="categoryId" className="block">
+              Danh mục
+            </label>
+            <select
+              id="categoryId"
+              name="categoryId"
+              defaultValue={product?.categoryId || ""}
+              className="p-2 w-full border rounded bg-gray-700 text-white"
+              required
+            >
+              <option value="">Chọn danh mục</option>
+              <option value="1">Phụ kiện đồ handmade</option>
+              <option value="2">Đồ trang trí handmade</option>
+            </select>
           </div>
 
           <button

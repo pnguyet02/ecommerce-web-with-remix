@@ -1,4 +1,3 @@
-// app/components/Pagination.tsx
 import React from "react";
 
 interface PaginationProps {
@@ -59,5 +58,4 @@ const Pagination: React.FC<PaginationProps> = ({
     </div>
   );
 };
-
 export default Pagination;

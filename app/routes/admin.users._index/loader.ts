@@ -1,14 +1,14 @@
-// src/routes/admin/products.tsx
-import { prisma } from "~/db/prisma.server"; // Giả sử bạn đang sử dụng Prisma để truy vấn
-import { json, LoaderFunction } from "@remix-run/node";
-import { LoaderData } from "~/types"; // Nhập kiểu LoaderData từ types
+// app/routes/admin/users/loader.ts
+import { prisma } from "~/db/prisma.server"; // Giả sử bạn đã thiết lập prisma
+import { LoaderFunction } from "@remix-run/node";
+import { User } from "~/types"; // Đảm bảo rằng bạn đã định nghĩa kiểu User
+
+export type LoaderData = {
+  users: User[]; // Danh sách người dùng
+};
 
 export const loader: LoaderFunction = async () => {
-  // Lấy danh sách sản phẩm từ cơ sở dữ liệu
-  const products = await prisma.product.findMany();
+  const users = await prisma.user.findMany(); // Lấy tất cả người dùng từ cơ sở dữ liệu
 
-  return json<LoaderData>({
-    user: null, // Thêm thông tin người dùng nếu cần, hoặc bỏ qua nếu không cần
-    products, // Trả về danh sách sản phẩm
-  });
+  return { users };
 };

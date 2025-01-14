@@ -20,7 +20,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   // Get page and sort values
   const page = parseInt(url.searchParams.get("page") || "1", 10);
-  const limit = 9; // Items per page
+  const limit = 6; // Items per page
   const sort = url.searchParams.get("sort") || "price-asc";
 
   // Set the order for sorting
@@ -43,45 +43,43 @@ export const loader: LoaderFunction = async ({ request }) => {
       break;
   }
 
-  // Log categoryId and filter params for debugging
-  console.log("Category ID:", categoryId);
-  console.log("Search Query:", searchQuery);
-  console.log("Page:", page);
-  console.log("Sort:", sort);
-
   // Fetch products based on category, search query, and sorting
   const products = await prisma.product.findMany({
-    where: {
-      name: {
-        contains: searchQuery, // Filter by search query
-      },
-      categoryId: categoryId > 0 ? categoryId : undefined, // Filter by categoryId if valid
-    },
-    skip: (page - 1) * limit,
-    take: limit,
-    orderBy,
-  });
-
-  // Count total products for pagination
-  const totalProducts = await prisma.product.count({
     where: {
       name: {
         contains: searchQuery,
       },
       categoryId: categoryId > 0 ? categoryId : undefined,
     },
+    skip: (page - 1) * limit, // Lấy trang đúng
+    take: limit,
+    orderBy,
+    include: {
+      category: {
+        select: { id: true, name: true },
+      },
+    },
   });
 
-  // Calculate total pages
-  const totalPages = Math.ceil(totalProducts / limit);
-
-  // Fetch categories for the sidebar
-  const categories = await prisma.category.findMany();
-
-  // Log fetched products and pagination data
   console.log("Fetched Products:", products);
+  // Count total products for pagination
+  const totalProducts = await prisma.product.count({
+    where: {
+      name: {
+        contains: searchQuery,
+      },
+      categoryId: categoryId > 0 ? categoryId : undefined, // Nếu categoryId là null hoặc 0, bỏ qua bộ lọc
+    },
+  });
+  console.log("categoryId:", categoryId);
+  // console.log("Fetched Products:", products);
+
+  // Calculate total pages correctly
+  const totalPages = Math.ceil(totalProducts / limit);
   console.log("Total Products:", totalProducts);
   console.log("Total Pages:", totalPages);
+  // Fetch categories for the sidebar
+  const categories = await prisma.category.findMany();
 
   // Return data to the frontend
   return json<LoaderData>({

@@ -24,7 +24,7 @@ const SearchSortForm: React.FC<SearchSortFormProps> = ({
           name="search"
           defaultValue={searchQuery}
           placeholder="Tìm kiếm sản phẩm"
-          className="px-4 py-2 bg-gray-700 text-white rounded w-full md:w-80"
+          className="px-4 py-2 bg-gray-700 text-white rounded w-full md:w-auto "
         />
         <button
           type="submit"

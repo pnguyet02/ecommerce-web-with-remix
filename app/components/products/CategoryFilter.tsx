@@ -1,4 +1,3 @@
-// ~/components/products/CategoryFilter.tsx
 import { Link } from "@remix-run/react";
 
 interface CategoryFilterProps {
@@ -17,7 +16,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
         {categories.map((category) => (
           <li key={category.id} className="mb-2">
             <Link
-              to={`${baseUrl}?categoryId=${category.id}`} // Sử dụng categoryId thay vì category
+              to={`${baseUrl}?categoryId=${category.id}`}
               className="text-blue-500 hover:text-blue-300"
             >
               {category.name}

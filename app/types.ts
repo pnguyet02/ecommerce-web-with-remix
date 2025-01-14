@@ -7,7 +7,9 @@ export type Product = {
   image: string;
   createdAt: Date;
   categoryId: number | null;
+  category: CategoryData | null;
 };
+
 export interface CategoryData {
   id: number;
   name: string;
@@ -19,13 +21,13 @@ export interface User {
   role: string;
 }
 export type LoaderData = {
-  user: {
-    userId: string;
-    name: string;
-    email: string;
-    role: string;
-  } | null;
+  user: User | null;
   products: Product[];
+  totalPages: number;
+  currentPage: number;
+  searchQuery: string;
+  sort: string;
+  categories: CategoryData[];
 };
 // types.ts
 export interface BlogCategory {
