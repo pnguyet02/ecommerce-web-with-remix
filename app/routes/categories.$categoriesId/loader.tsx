@@ -3,7 +3,6 @@ import { prisma } from "~/db/prisma.server";
 import { Product } from "~/types";
 
 export interface LoaderData {
-  // Export the type here
   products: Product[];
   totalPages: number;
   currentPage: number;
@@ -14,7 +13,7 @@ export interface LoaderData {
 export let loader: LoaderFunction = async ({ params, request }) => {
   const categoryId = parseInt(params.categoryId || "", 10);
 
-  // If categoryId is invalid, return 404 error
+  // Nếu categoryId không hợp lệ, trả về lỗi 404
   if (isNaN(categoryId)) {
     throw new Response("Danh mục không hợp lệ", { status: 404 });
   }
@@ -23,21 +22,24 @@ export let loader: LoaderFunction = async ({ params, request }) => {
   const page = parseInt(url.searchParams.get("page") || "1", 10);
   const limit = 9;
 
-  // Fetch products by category with pagination
+  // Truy vấn sản phẩm theo danh mục với phân trang
   const products = await prisma.product.findMany({
     where: { categoryId },
     skip: (page - 1) * limit,
     take: limit,
+    include: {
+      category: true, // Bao gồm thông tin danh mục cho mỗi sản phẩm
+    },
   });
 
-  // Count total products in the category
+  // Đếm tổng số sản phẩm trong danh mục
   const totalProducts = await prisma.product.count({
     where: { categoryId },
   });
 
   const totalPages = Math.ceil(totalProducts / limit);
 
-  // Fetch category name
+  // Truy vấn thông tin danh mục
   const category = await prisma.category.findUnique({
     where: { id: categoryId },
   });
@@ -47,7 +49,7 @@ export let loader: LoaderFunction = async ({ params, request }) => {
   }
 
   return json<LoaderData>({
-    products,
+    products, // Sản phẩm đã bao gồm thông tin category
     categoryName: category.name,
     totalPages,
     currentPage: page,

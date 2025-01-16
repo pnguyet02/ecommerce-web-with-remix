@@ -1,7 +1,7 @@
-// app/routes/products/loader.ts
 import { json, LoaderFunction } from "@remix-run/node";
 import { prisma } from "~/db/prisma.server";
 import { Product, CategoryData } from "~/types";
+import { getUserFromSession } from "~/sessions";
 
 export interface LoaderData {
   products: Product[];
@@ -10,9 +10,22 @@ export interface LoaderData {
   searchQuery: string;
   sort: string;
   categories: CategoryData[];
+  user: { id: number; name: string; role: string } | null;
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+  const rawUser = await getUserFromSession(request);
+
+  // Xử lý user để phù hợp với kiểu dữ liệu trong LoaderData
+  const user =
+    rawUser && rawUser.userId && rawUser.name && rawUser.role
+      ? {
+          id: Number(rawUser.userId),
+          name: String(rawUser.name),
+          role: String(rawUser.role),
+        }
+      : null;
+
   const url = new URL(request.url);
   const searchQuery = url.searchParams.get("search") || "";
   const categoryId = parseInt(url.searchParams.get("categoryId") || "0");
@@ -41,6 +54,9 @@ export const loader: LoaderFunction = async ({ request }) => {
     skip: (page - 1) * limit,
     take: limit,
     orderBy,
+    include: {
+      category: true,
+    },
   });
 
   const totalProducts = await prisma.product.count({
@@ -63,5 +79,6 @@ export const loader: LoaderFunction = async ({ request }) => {
     searchQuery,
     sort,
     categories,
+    user, // Trả thông tin user sau khi xử lý
   });
 };

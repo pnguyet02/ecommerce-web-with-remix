@@ -1,40 +1,29 @@
+import { Form, Link, useNavigate } from "@remix-run/react";
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useLoaderData } from "@remix-run/react";
-import { getUserFromSession } from "~/sessions";
 
-// Cập nhật kiểu dữ liệu cho loader
-type LoaderData = {
-  user: { id: string; name: string; role: string } | null;
+// Đảm bảo rằng `user` có thể là null và có giá trị mặc định nếu không được truyền vào
+type HeaderProps = {
+  user?: { id: number; name: string; role: string } | null; // Đặt user là optional
+  onUserUpdate?: (
+    user: { id: number; name: string; role: string } | null
+  ) => void; // Callback để cập nhật trạng thái người dùng
 };
 
-export const loader = async ({ request }: { request: Request }) => {
-  const user = await getUserFromSession(request);
-  return {
-    user: user ? { id: user.userId, name: user.name, role: user.role } : null,
-  };
-};
-
-export default function Header() {
+export default function Header({ user = null, onUserUpdate }: HeaderProps) {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const { user } = useLoaderData<LoaderData>();
   const navigate = useNavigate();
 
-  // Khi người dùng đăng nhập, cập nhật lại giao diện
+  // Cập nhật trạng thái khi user thay đổi
   useEffect(() => {
     if (user) {
-      console.log("User logged in:", user); // Kiểm tra thông tin người dùng
+      onUserUpdate?.(user);
     } else {
-      console.log("User is not logged in");
+      onUserUpdate?.(null);
     }
-  }, [user]);
+  }, [user, onUserUpdate]);
 
   const toggleDropdown = (menu: string) => {
     setActiveMenu((prev) => (prev === menu ? null : menu));
-  };
-
-  const handleLogout = async () => {
-    await fetch("/logout", { method: "POST" });
-    navigate("/login");
   };
 
   return (
@@ -181,6 +170,7 @@ export default function Header() {
                   </div>
                 )}
               </li>
+
               <li>
                 <Link
                   to="/about"
@@ -203,12 +193,41 @@ export default function Header() {
             {user ? (
               <>
                 <span>{user.name}</span>
-                <button
-                  className="text-sm bg-red-600 text-white px-3 py-1 rounded"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
+                {user.role === "user" && (
+                  <>
+                    {/* Chức năng giỏ hàng */}
+                    <Link
+                      to="/cart"
+                      className="text-sm text-white bg-green-600 px-3 py-1 rounded"
+                    >
+                      Giỏ hàng
+                    </Link>
+                    {/* Chức năng chỉnh sửa tài khoản */}
+                    <Link
+                      to="/profile/edit"
+                      className="text-sm text-white bg-blue-600 px-3 py-1 rounded"
+                    >
+                      Edit Profile
+                    </Link>
+                  </>
+                )}
+                {user.role === "admin" && (
+                  <button
+                    className="text-sm bg-green-600 text-white px-3 py-1 rounded"
+                    onClick={() => navigate("/admin/dashboard")} // Điều hướng admin tới trang dashboard
+                  >
+                    Admin Dashboard
+                  </button>
+                )}
+                {/* Form logout */}
+                <Form method="post" action="/logout">
+                  <button
+                    type="submit"
+                    className="text-sm bg-red-600 text-white px-3 py-1 rounded"
+                  >
+                    Logout
+                  </button>
+                </Form>
               </>
             ) : (
               <Link

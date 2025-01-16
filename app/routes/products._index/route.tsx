@@ -12,8 +12,15 @@ import SearchSortForm from "~/components/products/SearchSortForm";
 export { loader };
 
 export default function Products() {
-  const { products, totalPages, currentPage, searchQuery, sort, categories } =
-    useLoaderData<LoaderData>();
+  const {
+    products,
+    totalPages,
+    currentPage,
+    searchQuery,
+    sort,
+    categories,
+    user,
+  } = useLoaderData<LoaderData>();
 
   const baseUrl = "/products";
 
@@ -26,7 +33,7 @@ export default function Products() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col">
-      <Header />
+      <Header user={user} />
       <main className="p-8 mt-8 flex-grow flex flex-col md:flex-row">
         {/* Cột danh mục */}
         <CategoryFilter categories={categories} baseUrl={baseUrl} />

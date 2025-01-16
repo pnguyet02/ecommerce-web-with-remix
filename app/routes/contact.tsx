@@ -1,22 +1,28 @@
+import React from "react";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import { json, LoaderFunction } from "@remix-run/node";
-import { FaUser, FaEnvelope, FaComment } from "react-icons/fa"; // Cài đặt các icon bạn cần
+import { getUserFromSession } from "~/sessions"; // Giả sử bạn đã có hàm này để lấy thông tin người dùng
+import { useLoaderData } from "@remix-run/react";
+// Định nghĩa kiểu cho dữ liệu trả về từ loader
+interface LoaderData {
+  user: { id: number; name: string; role: string } | null; // Thêm kiểu dữ liệu cho user
+}
 
-export let loader: LoaderFunction = async () => {
-  return json({});
+export let loader: LoaderFunction = async ({ request }) => {
+  const user = await getUserFromSession(request); // Lấy thông tin người dùng từ session
+  return json({ user });
 };
-
 const Contact: React.FC = () => {
+  const { user } = useLoaderData<LoaderData>();
   return (
     <div className="bg-gray-100">
       {/* Include Header */}
-      <Header />
+      <Header user={user} />
 
       {/* Main Content */}
       <main className="container mx-auto py-8 px-4">
         <section className="mb-12 flex flex-wrap items-center justify-between">
-          {/* Phần ảnh */}
           <div className="w-full md:w-1/2 mb-6 md:mb-0">
             <img
               src="/images/contact.jpg"
@@ -24,8 +30,6 @@ const Contact: React.FC = () => {
               className="rounded shadow-lg mx-auto hover:scale-105 transition-transform duration-300 max-w-xs md:max-w-sm object-contain"
             />
           </div>
-
-          {/* Phần form */}
           <div className="w-full md:w-1/2">
             <h2 className="text-2xl font-semibold text-blue-700 mb-4">
               Liên hệ với chúng tôi

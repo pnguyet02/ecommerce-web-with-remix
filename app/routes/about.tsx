@@ -1,17 +1,27 @@
 import React from "react";
+import { json, LoaderFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
-import { json, LoaderFunction } from "@remix-run/node";
+import { getUserFromSession } from "~/sessions"; // Giả sử bạn đã có hàm này để lấy thông tin người dùng
 
-export let loader: LoaderFunction = async () => {
-  return json({});
+// Định nghĩa kiểu cho dữ liệu trả về từ loader
+interface LoaderData {
+  user: { id: number; name: string; role: string } | null;
+}
+
+export let loader: LoaderFunction = async ({ request }) => {
+  const user = await getUserFromSession(request); // Lấy thông tin người dùng từ session
+  return json({ user });
 };
 
 const About: React.FC = () => {
+  const { user } = useLoaderData<LoaderData>(); // Sử dụng kiểu LoaderData
+
   return (
     <div className="bg-gray-100">
-      {/* Include Header */}
-      <Header />
+      {/* Include Header và truyền thông tin user */}
+      <Header user={user} />
 
       {/* Main Content */}
       <main className="container mx-auto py-8 px-4">

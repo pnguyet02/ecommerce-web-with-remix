@@ -1,3 +1,4 @@
+// src/routes/index.tsx
 import { useLoaderData } from "@remix-run/react";
 import Header from "~/components/layout/Header";
 import Footer from "~/components/layout/Footer";
@@ -5,6 +6,8 @@ import Cart from "~/components/user/Cart";
 import AccountManagement from "~/components/user/AccountManagement";
 import { User } from "~/types"; // Import your User type
 import { getUserFromSession } from "~/sessions";
+
+// Loader to get user data
 export let loader = async ({ request }: { request: Request }) => {
   const user = await getUserFromSession(request); // Get user from session or DB
   return { user }; // Return user data
@@ -21,8 +24,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header Section */}
-      <Header />
+      {/* Header Section, pass `user` to Header */}
+      <Header user={user} />
 
       {/* Main Content Section */}
       <main className="max-w-7xl mx-auto p-8">
@@ -35,8 +38,8 @@ export default function Home() {
 
           {/* Account Management Section */}
           <AccountManagement
-            name={user.name}
-            email={user.email}
+            name={user?.name || ""}
+            email={user?.email || ""}
             onUpdate={handleUserUpdate}
           />
         </div>

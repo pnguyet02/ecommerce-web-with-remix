@@ -37,45 +37,44 @@
 //   const session = await getSession(request.headers.get("Cookie"));
 //   return destroySession(session);
 // };
+// utils/session.ts
 import { createCookieSessionStorage } from "@remix-run/node";
 
 const { getSession, commitSession, destroySession } =
   createCookieSessionStorage({
     cookie: {
-      name: "__session", // Tên cookie lưu trữ session
-      secure: process.env.NODE_ENV === "production", // Chỉ bật secure khi ở môi trường production
-      secrets: ["your-secret-key"], // Đảm bảo sử dụng một secret key mạnh
-      sameSite: "lax", // Chế độ SameSite cookie
-      httpOnly: true, // Đảm bảo cookie chỉ có thể truy cập qua HTTP, không qua JavaScript
+      name: "__session",
+      secure: process.env.NODE_ENV === "production",
+      secrets: ["your-secret-key"],
+      sameSite: "lax",
+      httpOnly: true,
     },
   });
 
-// Lấy thông tin người dùng từ session
+// Xuất commitSession để sử dụng ở các tệp khác
+export { getSession, commitSession, destroySession };
+
+// Các hàm để lấy, tạo và hủy session
 export const getUserFromSession = async (request: Request) => {
   const session = await getSession(request.headers.get("Cookie"));
-
   return {
     userId: session.get("userId"),
     name: session.get("name"),
     email: session.get("email"),
-    role: session.get("role"), // Lấy thông tin role từ session
+    role: session.get("role"),
   };
 };
 
-// Lưu thông tin người dùng vào session
-export const setSession = async (user: any) => {
-  const session = await getSession();
-  session.set("userId", user.id); // Lưu userId vào session
-  session.set("name", user.name); // Lưu tên người dùng vào session
-  session.set("email", user.email); // Lưu email vào session
-  session.set("role", user.role); // Lưu role vào session
-
-  console.log("User session set:", user); // Log thông tin để kiểm tra
-  return commitSession(session); // Cập nhật session và trả về cookie
+export const setUserSession = async (user: any, request: Request) => {
+  const session = await getSession(request.headers.get("Cookie"));
+  session.set("userId", user.id);
+  session.set("name", user.name);
+  session.set("email", user.email);
+  session.set("role", user.role);
+  return commitSession(session); // Trả về chuỗi cookie
 };
 
-// Xóa session khi người dùng đăng xuất
 export const destroyUserSession = async (request: Request) => {
   const session = await getSession(request.headers.get("Cookie"));
-  return destroySession(session); // Xóa session và trả về cookie đã xóa
+  return destroySession(session);
 };

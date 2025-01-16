@@ -1,9 +1,9 @@
-// src/routes/blogs/$blogId.tsx
 import { useLoaderData } from "@remix-run/react";
 import { Blog } from "~/types";
 
 export default function BlogDetail() {
-  const { blog } = useLoaderData<{ blog: Blog | null }>();
+  // Fallback to prevent destructuring errors
+  const { blog } = useLoaderData<{ blog: Blog | null }>() || { blog: null };
 
   if (!blog) {
     return (

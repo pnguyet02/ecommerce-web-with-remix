@@ -14,7 +14,6 @@
 //   }
 // };
 // utils/auth.ts
-// utils/auth.ts
 import { prisma } from "~/db/prisma.server";
 import { setUserSession } from "~/sessions";
 

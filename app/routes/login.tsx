@@ -1,81 +1,44 @@
 import { json, redirect, ActionFunction } from "@remix-run/node";
 import { prisma } from "~/db/prisma.server";
-import { setSession } from "~/sessions";
+import { setUserSession } from "~/sessions";
 import bcrypt from "bcryptjs";
-import { authenticateUser } from "~/utils/auth";
-// Hàm cập nhật mật khẩu mới trong DB (nếu cần)
-// const updatePassword = async (email: string, newPassword: string) => {
-//   const hashedPassword = await bcrypt.hash(newPassword, 10);
-//   await prisma.user.update({
-//     where: { email: email },
-//     data: { password: hashedPassword },
-//   });
-//   console.log("Mật khẩu đã được cập nhật thành công!");
-// };
 
-export let action: ActionFunction = async ({ request }) => {
+// Xử lý hành động login
+export const action: ActionFunction = async ({ request }) => {
   const formData = new URLSearchParams(await request.text());
   const email = formData.get("email");
   const password = formData.get("password");
 
-  console.log("Email:", email);
-  console.log("Password:", password);
-
   if (!email || !password) {
-    console.log("Thiếu email hoặc mật khẩu.");
     return json({ error: "Email và mật khẩu là bắt buộc" }, { status: 400 });
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-  });
+  const user = await prisma.user.findUnique({ where: { email } });
 
   if (!user) {
-    console.log("Email không tồn tại.");
     return json({ error: "Email không tồn tại" }, { status: 400 });
   }
 
-  // In ra thông tin chi tiết mật khẩu trong DB và mật khẩu người dùng nhập vào
-  console.log("Mật khẩu đã mã hóa trong DB:", user.password);
-  console.log("Mật khẩu người dùng nhập vào:", password);
-
-  // Loại bỏ khoảng trắng ở đầu và cuối mật khẩu
-  const passwordTrimmed = password.trim();
-  const userPasswordTrimmed = user.password.trim();
-  console.log("Mật khẩu người dùng nhập vào sau khi trim:", passwordTrimmed);
-  console.log("Mật khẩu trong DB sau khi trim:", userPasswordTrimmed);
-
-  // So sánh mật khẩu đã mã hóa với mật khẩu người dùng nhập vào
   const isPasswordCorrect = await bcrypt.compare(
-    passwordTrimmed,
-    userPasswordTrimmed
+    password.trim(),
+    user.password.trim()
   );
-  console.log("Kết quả so sánh mật khẩu:", isPasswordCorrect);
 
   if (!isPasswordCorrect) {
-    console.log("Mật khẩu không đúng.");
     return json({ error: "Mật khẩu không đúng" }, { status: 400 });
   }
 
-  console.log("Vai trò người dùng:", user.role);
+  // Lấy giá trị cookie từ hàm setUserSession
+  const sessionCookie = await setUserSession(user, request);
 
-  if (user.role === "admin") {
-    return redirect("/admin/dashboard", {
-      headers: {
-        "Set-Cookie": await setSession(user),
-      },
-    });
-  }
-
-  return redirect("/user", {
+  // Điều hướng đến trang phù hợp
+  const redirectTo = user.role === "admin" ? "/admin/dashboard" : "/";
+  return redirect(redirectTo, {
     headers: {
-      "Set-Cookie": await setSession(user),
+      "Set-Cookie": sessionCookie, // Đặt cookie ở đây
     },
   });
 };
-// login.ts (action của trang login)
-
-// routes/login.tsx
 
 // export let action = async ({ request }: any) => {
 //   // Lấy dữ liệu từ form gửi lên (POST request)

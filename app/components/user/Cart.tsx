@@ -1,33 +1,53 @@
-import { useState } from "react";
+// import { useLoaderData } from "@remix-run/react";
+// import { CartItem } from "~/types";
 
-// Define the CartItem type
-interface CartItem {
-  name: string;
-  price: number;
-}
+// export default function Cart() {
+//   const { cartItems } = useLoaderData<{ cartItems: CartItem[] }>();
 
-export default function Cart() {
-  // Use the CartItem type for the state
-  const [items, setItems] = useState<CartItem[]>([]);
+//   const removeFromCart = async (cartItemId: number) => {
+//     // Gửi yêu cầu đến API để xóa sản phẩm khỏi giỏ hàng
+//     const response = await fetch(`/cart/api/cart/${cartItemId}`, {
+//       method: "DELETE",
+//     });
 
-  // Example: Add a product to the cart
-  const addItemToCart = (item: CartItem) => {
-    setItems([...items, item]);
-  };
+//     if (response.ok) {
+//       // Cập nhật lại giao diện sau khi xóa
+//       alert("Sản phẩm đã được xóa khỏi giỏ hàng");
+//       window.location.reload(); // Tải lại trang để lấy giỏ hàng mới
+//     } else {
+//       alert("Có lỗi xảy ra khi xóa sản phẩm");
+//     }
+//   };
 
-  return (
-    <div className="p-4">
-      <h2 className="text-2xl">Your Cart</h2>
-      <ul>
-        {items.map((item, index) => (
-          <li key={index} className="border-b py-2">
-            {item.name} - ${item.price}
-          </li>
-        ))}
-      </ul>
-      <button className="mt-4 bg-blue-600 text-white py-2 px-4 rounded">
-        Checkout
-      </button>
-    </div>
-  );
-}
+//   return (
+//     <div>
+//       <h1>Giỏ hàng</h1>
+//       {cartItems.length === 0 ? (
+//         <p>Giỏ hàng của bạn đang trống.</p>
+//       ) : (
+//         <div>
+//           {cartItems.map((item) => (
+//             <div key={item.id} className="flex justify-between">
+//               <div>
+//                 <img
+//                   src={item.product.image}
+//                   alt={item.product.name}
+//                   className="w-20 h-20 object-cover"
+//                 />
+//                 <h3>{item.product.name}</h3>
+//                 <p>Số lượng: {item.quantity}</p>
+//                 <p>{item.product.price} USD</p>
+//               </div>
+//               <button
+//                 onClick={() => removeFromCart(item.id)}
+//                 className="bg-red-500 text-white py-1 px-4 rounded"
+//               >
+//                 Xóa
+//               </button>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </div>
+//   );
+// }

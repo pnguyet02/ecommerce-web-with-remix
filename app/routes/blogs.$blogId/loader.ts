@@ -5,18 +5,14 @@ import { prisma } from "~/db/prisma.server";
 export let loader: LoaderFunction = async ({ params }) => {
   const { blogId } = params;
 
-  console.log("Loading blog with ID:", blogId); // Log blogId
+  console.log("Loading blog with ID:", blogId);
 
   const blog = await prisma.blog.findUnique({
     where: { id: Number(blogId) },
     include: { category: true },
   });
 
-  console.log("Fetched blog:", blog); // Log blog data
+  console.log("Fetched blog:", blog);
 
-  if (!blog) {
-    return json({ blog: null });
-  }
-
-  return json({ blog });
+  return json({ blog: blog || null }); // Explicitly returning null if no blog found
 };

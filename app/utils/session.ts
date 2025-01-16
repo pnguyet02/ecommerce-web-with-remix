@@ -17,16 +17,15 @@ const { getSession, commitSession, destroySession } =
   });
 
 // Lưu thông tin người dùng vào session
-export async function setUserSession(user: any, request: Request) {
+export const setUserSession = async (user: any, request: Request) => {
   const session = await getSession(request.headers.get("Cookie"));
-
-  // Lưu các thông tin người dùng vào session (bao gồm cả vai trò)
   session.set("userId", user.id);
-  session.set("userRole", user.role); // Lưu vai trò của người dùng (admin hoặc user)
+  session.set("name", user.name);
+  session.set("email", user.email);
+  session.set("role", user.role);
 
-  const sessionId = await commitSession(session);
-  return sessionId;
-}
+  return commitSession(session); // Trả về cookie cập nhật
+};
 
 // Lấy thông tin người dùng từ session
 export async function getUserFromSession(request: Request) {

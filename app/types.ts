@@ -46,7 +46,15 @@ export interface Blog {
   createdAt: string;
   updatedAt: string;
 }
+// export interface CartItem {
+//   id: number;
+//   name: string;
+//   price: number;
+//   image: string;
+//   quantity: number; // Quantity of this product in the cart
+// }
 export interface CartItem {
-  name: string;
-  price: number;
+  id: number;
+  quantity: number;
+  product: Product;
 }

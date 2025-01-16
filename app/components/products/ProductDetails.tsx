@@ -53,7 +53,6 @@ export default function ProductDetail() {
       {/* Sản phẩm tương tự */}
       <div className="mt-8">
         <h3 className="text-2xl font-semibold mb-4">Sản phẩm tương tự</h3>
-        {/* Bạn có thể lặp qua các sản phẩm trong cùng danh mục để hiển thị */}
       </div>
     </div>
   );
