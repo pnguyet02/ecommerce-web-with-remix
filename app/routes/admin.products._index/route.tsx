@@ -38,6 +38,13 @@ export default function ManageProducts() {
         </div>
         <div className="flex-grow md:ml-6">
           <h1 className="text-2xl font-semibold mb-4">Quản lý Sản phẩm</h1>
+          <a
+            href="/admin/dashboard"
+            className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded shadow-md transition duration-300"
+          >
+            Home
+          </a>
+
           <div className="flex justify-between mb-4 items-center space-x-4">
             <button
               onClick={handleAddProduct}

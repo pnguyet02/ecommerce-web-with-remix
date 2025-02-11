@@ -37,7 +37,7 @@ export default function Header({ user = null, onUserUpdate }: HeaderProps) {
           >
             <img src="/images/logo.jpg" className="h-8" alt="Flowbite Logo" />
             <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-              Flowbite
+              Janner
             </span>
           </Link>
         </div>

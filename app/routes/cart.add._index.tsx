@@ -5,7 +5,7 @@ import { getSession } from "~/sessions";
 export let action: ActionFunction = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const userId = session.get("userId");
-
+  console.log("User ID từ session:", userId);
   if (!userId) {
     throw new Response("Unauthorized", { status: 401 });
   }
@@ -41,7 +41,7 @@ export let action: ActionFunction = async ({ request }) => {
       // Nếu chưa có, tạo mới
       await prisma.cart.create({
         data: {
-          userId,
+          userId: userId,
           productId: Number(productId),
           quantity,
         },

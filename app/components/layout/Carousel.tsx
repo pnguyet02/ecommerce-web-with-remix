@@ -4,9 +4,9 @@ const Carousel = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const banners = [
-    "/images/banner1.jpg",
-    "/images/banner2.jpg",
-    "/images/banner3.png",
+    "/images/banner1.webp",
+    "/images/banner2.webp",
+    "/images/banner3.webp",
   ];
 
   const nextSlide = () => {

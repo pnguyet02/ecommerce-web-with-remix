@@ -9,7 +9,15 @@ import { prisma } from "~/db/prisma.server";
 import { LoaderFunction } from "@remix-run/node"; // Remix's Request type
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const products = await prisma.product.findMany();
+  // const products = await prisma.product.findMany();
+  const products = await prisma.product.findMany({
+    take: 6, // Giới hạn lấy 6 sản phẩm
+    orderBy: { createdAt: "desc" }, // Sắp xếp sản phẩm mới nhất trước
+  });
+  // const blogs = await prisma.blog.findMany({
+  //   take: 3,
+  //   orderBy: { createdAt: "desc" }, // Sắp xếp sản phẩm mới nhất trước
+  // });
   const user = await getUserFromSession(request); // Kiểm tra nếu người dùng đã đăng nhập
   return { products, user }; // Trả về cả products và user
 };
@@ -29,7 +37,9 @@ export default function Index() {
       <Header user={user} />
       <Carousel />
       <main className="p-8 mt-8 flex-grow">
+        <h2 className="text-2xl font-bold mb-4">DANH SÁCH SẢN PHẨM</h2>
         <ProductList products={products} />
+        {/* <h2 className="text-2xl font-bold mb-4">BÀI VIẾT MỚI NHẤT</h2> */}
       </main>
       <Footer />
     </div>

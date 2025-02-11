@@ -5,19 +5,49 @@ import Footer from "~/components/layout/Footer";
 import type { Product } from "~/types";
 import { loader } from "./loader";
 import { action } from "./action";
+import { useState } from "react";
 
 export { loader, action };
 
 export default function ProductDetail() {
-  const { product, similarProducts } = useLoaderData<{
+  const { product, similarProducts, user } = useLoaderData<{
     product: Product;
     similarProducts: Product[];
+    user: { id: number; name: string; role: string } | null;
   }>();
+
+  const [quantity, setQuantity] = useState(1); // Số lượng sản phẩm chọn
+
+  // Hàm thêm vào giỏ hàng
+  const addToCart = async () => {
+    try {
+      const response = await fetch("/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          productId: product.id.toString(),
+          quantity: quantity.toString(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Không thể thêm sản phẩm vào giỏ hàng");
+      }
+
+      alert(`${product.name} đã được thêm vào giỏ hàng!`);
+    } catch (error) {
+      console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
+      alert("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.");
+    }
+  };
 
   return (
     <div className="bg-gray-100">
-      {/* Include Header */}
-      <Header />
+      {/* Include Header with user info */}
+      <Header user={user} />
+
       <div className="container mx-auto py-8 px-4">
         {/* Product Details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -52,11 +82,15 @@ export default function ProductDetail() {
                 name="quantity"
                 min="1"
                 max={product.stock}
-                defaultValue="1"
+                value={quantity}
+                onChange={(e) => setQuantity(Number(e.target.value))}
                 className="w-20 p-2 border rounded text-center"
               />
             </div>
-            <button className="mt-6 w-full py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition">
+            <button
+              className="mt-6 w-full py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition"
+              onClick={addToCart}
+            >
               Thêm vào giỏ hàng
             </button>
           </div>
@@ -70,7 +104,7 @@ export default function ProductDetail() {
               similarProducts.map((similarProduct) => (
                 <div
                   key={similarProduct.id}
-                  className="bg-gray-100 p-4 rounded shadow-md"
+                  className="bg-white p-4 rounded shadow-md"
                 >
                   <img
                     src={similarProduct.image || "/placeholder-image.jpg"}
@@ -100,6 +134,7 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+
       {/* Include Footer */}
       <Footer />
     </div>
