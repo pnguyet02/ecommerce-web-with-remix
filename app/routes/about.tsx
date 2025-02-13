@@ -32,11 +32,11 @@ const About: React.FC = () => {
               Đôi nét về chúng tôi
             </h2>
             <p className="text-lg leading-relaxed text-justify">
-              Khách hàng khi sở hữu sản phẩm của Yan Trang Sức sẽ không chỉ đơn
-              giản là sở hữu giá trị cơ bản mà còn cảm nhận được câu chuyện mà
-              sản phẩm mang lại. Chúng tôi luôn ưu tiên sử dụng vật liệu tái sử
-              dụng, thân thiện với môi trường, mang màu sắc độc đáo và mới lạ
-              trong mỗi sản phẩm.
+              Khách hàng khi sở hữu sản phẩm của Janner sẽ không chỉ đơn giản là
+              sở hữu giá trị cơ bản mà còn cảm nhận được câu chuyện mà sản phẩm
+              mang lại. Chúng tôi luôn ưu tiên sử dụng vật liệu tái sử dụng,
+              thân thiện với môi trường, mang màu sắc độc đáo và mới lạ trong
+              mỗi sản phẩm.
             </p>
             <p className="text-lg leading-relaxed mt-4 text-justify">
               Không chỉ là một cửa hàng trực tuyến, chúng tôi còn tạo ra trải
@@ -72,9 +72,9 @@ const About: React.FC = () => {
               sản phẩm phụ kiện thủ công độc đáo, truyền cảm hứng và đem lại
               niềm vui, sự tự tin cho khách hàng.
               <br />
-              Mỗi sản phẩm của Yan Trang Sức đều mang một giá trị riêng, được
-              thiết kế và tạo ra bằng cách tái sử dụng các vật liệu cũ, kết nối
-              khách hàng với những câu chuyện đặc biệt qua từng món đồ.
+              Mỗi sản phẩm của Janner đều mang một giá trị riêng, được thiết kế
+              và tạo ra bằng cách tái sử dụng các vật liệu cũ, kết nối khách
+              hàng với những câu chuyện đặc biệt qua từng món đồ.
             </p>
           </div>
         </section>

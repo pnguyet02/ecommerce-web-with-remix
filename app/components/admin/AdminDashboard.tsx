@@ -28,7 +28,13 @@ const AdminDashboard = ({ children }: { children?: React.ReactNode }) => {
       {/* Sidebar */}
       <div className="w-64 bg-blue-800 text-white p-6">
         <h2 className="text-2xl font-semibold mb-6 text-center">
-          <MdDashboard className="inline-block w-6 h-6 mr-2" /> Admin Panel
+          <MdDashboard className="inline-block w-6 h-6 mr-2" />{" "}
+          <Link
+            to="/login"
+            className="text-lg text-gray-900 dark:text-white font-bold"
+          >
+            Admin Panel
+          </Link>
         </h2>
         <ul className="space-y-4">
           <li>
